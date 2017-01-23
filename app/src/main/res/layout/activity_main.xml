@@ -6,19 +6,22 @@
     android:orientation="vertical"
     android:gravity="center_vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:text="Va chercher!"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="Chargement..."
-        tools:ignore="HardcodedText" />
+        android:id="@+id/start_asynctask" />
 
     <ProgressBar
-        android:id="@+id/aProgressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="fill_parent"
-        android:layout_margin="10dp"
-        android:layout_height="wrap_content" />
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:indeterminate="false" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/output" />
 
 </LinearLayout>
