@@ -1,6 +1,7 @@
 package com.example.gclaverie.centralevoyage;
 
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,21 +12,25 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import android.util.Log;
 import android.widget.TextView;
-
 import org.json.JSONObject;
 
 public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     protected ProgressBar pBar;
+    protected Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        location = getLastKnownLocation();
+
 
         final HashMap<String, String> parameters = new HashMap<String, String>();
         parameters.put("lat", "43.14554197717751");
@@ -59,6 +64,7 @@ public class MainActivity extends Activity {
         @Override
         protected String doInBackground(String... params)
         {
+            Log.d(TAG, "retriving data from API");
             StringBuilder content = new StringBuilder();
             try
             {
@@ -71,53 +77,37 @@ public class MainActivity extends Activity {
                     }
                     Log.d(TAG, "url="+URL);
                 }
-                Log.d(TAG, "reading result");
                 URL apiURL = new URL(URL);
-                Log.d(TAG, "objet url créé");
                 URLConnection urlConnection = apiURL.openConnection();
-                Log.d(TAG, "urlconnection créé");
-                urlConnection.setDoOutput(true);
-                Log.d(TAG, "param output");
                 try {
                     urlConnection.connect();
                 } catch (Exception e) {
-                    Log.d(TAG, "tentative de connection foirée");
                     Log.d(TAG, e.toString());
                 }
-                Log.d(TAG, "tentative de connection");
                 //reading the response from the urlconnection via a bufferedreader
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
                     content.append(line + "\n");
-                    Log.d(TAG, "line");
+                    //Log.d(TAG, "data="+line);
                 }
-                /*
-                while ((line = bufferedReader.readLine()) != null)
-                {
-                    content.append(line + "\n");
-                    Log.d(TAG, "line" + line);
-                }*/
-                Log.d(TAG, "fin input");
                 bufferedReader.close();
                 return content.toString();
             }
-                catch (Exception e) {}
-            return "tâche-finie-fail";
+                catch (Exception e) {Log.d(TAG, e.toString());}
+            Log.d(TAG, "echec de la tâche asynchrone");
+            return "";
+
         }
 
         @Override
         protected void onPostExecute(String result)
         {
-            //pDialog.dismiss();
-            //progressText.setText("Response is: "+ result.substring(0,500));
             pBar.setVisibility(View.GONE);
 
             try {
                 progressText.setText("Tâche finie et réussie");
                 JSONObject theObject = new JSONObject(result);
-                //txt.setText("Response is: "+theObject.getString("status")+"\n"+theObject.getString("count")+"/"+theObject.getString("count_total"));
             } catch (Exception e){
-                //txt.setText("Error during process");
                 progressText.setText("Tâche finie et ratée");
             }
 
@@ -129,13 +119,6 @@ public class MainActivity extends Activity {
             pBar.setVisibility(View.VISIBLE);
             progressText = (TextView) findViewById(R.id.progressText);
             progressText.setText("Tâche en cours");
-
-            /*
-            pDialog = new ProgressDialog(getApplicationContext());
-            pDialog.setMessage("Reqûete en cours de traitement");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();*/
             super.onPreExecute();
         }
 
@@ -144,7 +127,4 @@ public class MainActivity extends Activity {
         }
 
     }
-
-
-
 }
