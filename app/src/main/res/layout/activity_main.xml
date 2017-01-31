@@ -6,6 +6,14 @@
     android:orientation="vertical"
     android:gravity="center_vertical" >
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textError"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="normal|bold" />
+
     <Button
         android:text="Va chercher!"
         android:layout_width="match_parent"
