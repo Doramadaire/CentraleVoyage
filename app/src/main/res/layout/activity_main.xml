@@ -15,10 +15,11 @@
         android:textStyle="normal|bold" />
 
     <Button
-        android:text="Va chercher!"
-        android:layout_width="match_parent"
+        android:text="Fournir sa position"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/start_asynctask" />
+        android:id="@+id/ask_permission_button"
+        android:layout_gravity="center" />
 
     <ProgressBar
         style="@style/Widget.AppCompat.ProgressBar"
@@ -30,6 +31,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/progressText"/>
+        android:id="@+id/progressText"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+
+    <Button
+        android:text="Réessayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/retry_button"
+        android:layout_gravity="center" />
 
 </LinearLayout>
