@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class DownloadStreamTask extends AsyncTask<String, Void, String> {
+    private class DownloadStreamTask extends AsyncTask<String, Void, Boolean> {
 
         String URL;
         HashMap<String, String> parameters;
@@ -156,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... params)
+        protected Boolean doInBackground(String... params)
+        //retourne true si tout s'est bien passé, false sinon
         {
             //On commence par télécharger le résultat de l'API
             StringBuilder content = new StringBuilder();
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                         String value = entry.getValue();
                         URL += "&"+key+"="+value;
                     }
-                    //Log.d(TAG, "url avec paramètres="+URL);
+                    Log.d(TAG, "url avec paramètres="+URL);
                 }
                 URL apiURL = new URL(URL);
                 URLConnection urlConnection = apiURL.openConnection();
@@ -187,40 +188,65 @@ public class MainActivity extends AppCompatActivity {
                 bufferedReader.close();
                 //On a le résultat, maintenant on le parse et on le met dans une jolie hashmap
                 Log.d(TAG, content.toString());
-                /*
+
+
                 try {
-                    JSONObject retrievedJSON = new JSONObject(content);
+                    JSONObject retrievedJSON = new JSONObject(content.toString());
 
                     String offset = String.valueOf(retrievedJSON.getInt("offset"));
 
                     JSONArray dataArray = retrievedJSON.getJSONArray("data");
                     for (int i = 0; i < dataArray.length(); i++)
                     {
-                        String type = dataArray.getJSONObject(i).getString("type");
-                        String type = dataArray.getJSONObject(i).getString("type");
-                        String type = dataArray.getJSONObject(i).getString("type");
-                        String type = dataArray.getJSONObject(i).getString("type");
-                        String type = dataArray.getJSONObject(i).getString("type");
+                        JSONObject currentObj = dataArray.getJSONObject(i);
+                        String type = currentObj.getString("type");
+
+                        switch (type) {
+                            case "CITY":
+                            case "ADMIN":
+                                Log.d(TAG, "CITY ou ADMIN");
+                                Log.d(TAG, currentObj.toString());
+                                break;
+
+                            case "POI":
+                                Log.d(TAG, "POI");
+                                Log.d(TAG, currentObj.toString());
+                                break;
+
+                            case "PARCOURS":
+                                Log.d(TAG, "PARCOURS");
+                                Log.d(TAG, currentObj.toString());
+                                break;
+
+                            default:
+                                Log.d(TAG, "cas autre");
+                                Log.d(TAG, currentObj.toString());
+                                break;
+                        }
                     }
                 } catch (Exception e){
                     Log.d(TAG, "on a pas réussis à parse le Json");
-                }*/
+                    Log.d(TAG, e.toString());
+                }
                 Log.d(TAG, "on retourne le contenu");
-                return content.toString();
+                return true;
             }
                 catch (Exception e) {Log.d(TAG, e.toString());}
             Log.d(TAG, "Récupération du flux JSON échoué");
-            progressText.setText("Chargement échoué, veuillez réessayer");
-            return "";
+            return false;
         }
 
         @Override
-        protected void onPostExecute(String result)
+        protected void onPostExecute(Boolean success)
         {
-            //retry_button.setVisibility(View.VISIBLE);
-            pBar.setVisibility(View.GONE);
-            progressText.setText("Chargement terminé");
-            super.onPostExecute(result);
+            if (success)  {
+                pBar.setVisibility(View.GONE);
+                progressText.setText("Chargement terminé");
+            } else {
+                retry_button.setVisibility(View.VISIBLE);
+                progressText.setText("Chargement échoué, veuillez réessayer");
+            }
+            super.onPostExecute(success);
         }
 
         @Override
