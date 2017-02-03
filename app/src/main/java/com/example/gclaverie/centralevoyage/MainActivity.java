@@ -1,11 +1,11 @@
 package com.example.gclaverie.centralevoyage;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +24,8 @@ import android.util.Log;
 import android.widget.TextView;
 import org.json.JSONObject;
 import org.json.JSONArray;
+
+import static com.example.gclaverie.centralevoyage.VoyageSingleton.getInstance;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,12 +83,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void tryLoadingData() {
         //on vérifie l'accès aux données de localisation
+        boolean success = false;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //si on n'a pas l'autorisation, on la demande
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION);
         } else {
             //Permissions accordées : lancement du chargement
             loadData();
+        }
+        if (success) {//si c'est réussit, on change d'activité et on présente les destinations
+
         }
     }
 
@@ -95,20 +101,24 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "OUAIS JE VAIS RECUPERER MA POSITION");
 
         Location location = getLastKnownLocation();
-
-        //on récupére la position et on la met dans une hashmap
-        parameters.put("lat", String.valueOf(location.getLatitude()));
-        parameters.put("lon", String.valueOf(location.getLongitude()));
-        //parameters.put("lat", "43.14554197717751");
-        //parameters.put("lon", "6.00246207789145");
-        parameters.put("offset", "0");
-        //on envoie la requete asynchrone
-        new DownloadStreamTask(apiUrl, parameters).execute();
-        //quand c'et chargé on va direct sur la nouvelle activité qui présente les contenus
-        //si échec bouton réessayer
+        Log.d(TAG, "so far so good");
+        if (location == null){
+            Log.d(TAG, "fais iech j'ai location=null");
+        } else {
+            Log.d(TAG, "cool, location != null");
+            //on récupére la position et on la met dans une hashmap
+            parameters.put("lat", String.valueOf(location.getLatitude()));
+            parameters.put("lon", String.valueOf(location.getLongitude()));
+            //parameters.put("lat", "43.14554197717751");
+            //parameters.put("lon", "6.00246207789145");
+            parameters.put("offset", "0");
+            //on envoie la requete asynchrone
+            new DownloadStreamTask(apiUrl, parameters).execute();
+        }
     }
 
     private Location getLastKnownLocation() {
+        Log.d(TAG, "où suis-je, dans quel étagère?");
         locationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
         List<String> providers = locationManager.getProviders(true);
         Location bestLocation = null;
@@ -132,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Permissions accordées : lancement du chargement
-                    loadData();
+                    tryLoadingData();
                 } else {
                     //Permissions refusés, on peut rien faire à part redemander
                     textError.setText("L'application a besoin des données de géolocalisation pour fonctionner");
@@ -189,46 +199,58 @@ public class MainActivity extends AppCompatActivity {
                 //On a le résultat, maintenant on le parse et on le met dans une jolie hashmap
                 Log.d(TAG, content.toString());
 
-
                 try {
+
                     JSONObject retrievedJSON = new JSONObject(content.toString());
-
-                    String offset = String.valueOf(retrievedJSON.getInt("offset"));
-
                     JSONArray dataArray = retrievedJSON.getJSONArray("data");
+
+                    getInstance().setOffset(String.valueOf(retrievedJSON.getInt("offset")));
+
+                    HashMap<String, String> destination = new HashMap<String, String>();
+
                     for (int i = 0; i < dataArray.length(); i++)
                     {
-                        JSONObject currentObj = dataArray.getJSONObject(i);
-                        String type = currentObj.getString("type");
+                        try {
+                            JSONObject currentObj = dataArray.getJSONObject(i);
+                            String type = currentObj.getString("type");
 
-                        switch (type) {
-                            case "CITY":
-                            case "ADMIN":
-                                Log.d(TAG, "CITY ou ADMIN");
-                                Log.d(TAG, currentObj.toString());
-                                break;
+                            destination.put("type", type);
+                            destination.put("display", currentObj.getString("display"));
+                            destination.put("media_url", currentObj.getString("media"));
 
-                            case "POI":
-                                Log.d(TAG, "POI");
-                                Log.d(TAG, currentObj.toString());
-                                break;
+                            /* Inutile ici
+                            switch (type) {
+                                case "CITY":
+                                case "ADMIN":
 
-                            case "PARCOURS":
-                                Log.d(TAG, "PARCOURS");
-                                Log.d(TAG, currentObj.toString());
-                                break;
+                                    Log.d(TAG, "CITY ou ADMIN");
+                                    Log.d(TAG, currentObj.toString());
 
-                            default:
-                                Log.d(TAG, "cas autre");
-                                Log.d(TAG, currentObj.toString());
-                                break;
-                        }
+                                    break;
+
+                                case "POI":
+                                    Log.d(TAG, "POI");
+                                    Log.d(TAG, currentObj.toString());
+                                    break;
+
+                                case "PARCOURS":
+                                    Log.d(TAG, "PARCOURS");
+                                    Log.d(TAG, currentObj.toString());
+                                    break;
+
+                                default:
+                                    Log.d(TAG, "cas autre");
+                                    Log.d(TAG, currentObj.toString());
+                                    break;*/
+
+                                getInstance().addDestination(destination);
+                        } catch (Exception e) {Log.d(TAG, e.toString());}
                     }
                 } catch (Exception e){
                     Log.d(TAG, "on a pas réussis à parse le Json");
                     Log.d(TAG, e.toString());
                 }
-                Log.d(TAG, "on retourne le contenu");
+                Log.d(TAG, "on retourne succès");
                 return true;
             }
                 catch (Exception e) {Log.d(TAG, e.toString());}
@@ -239,22 +261,27 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean success)
         {
+            super.onPostExecute(success);
             if (success)  {
+                //quand c'et chargé on va direct sur la nouvelle activité qui présente les contenus
                 pBar.setVisibility(View.GONE);
                 progressText.setText("Chargement terminé");
+                Log.d(TAG, "lance nouvel intent");
+                Intent dispDestIntent = new Intent( MainActivity.this, DisplayDestinations.class );
+                startActivity(dispDestIntent);
             } else {
+                //si échec bouton réessayer
                 retry_button.setVisibility(View.VISIBLE);
                 progressText.setText("Chargement échoué, veuillez réessayer");
             }
-            super.onPostExecute(success);
         }
 
         @Override
         protected void onPreExecute() {
+            super.onPreExecute();
             pBar.setVisibility(View.VISIBLE);
             progressText = (TextView) findViewById(R.id.progressText);
             progressText.setText("Chargement en cours...");
-            super.onPreExecute();
         }
     }
 }
