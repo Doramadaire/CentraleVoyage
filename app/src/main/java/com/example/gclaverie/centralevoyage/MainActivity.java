@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void tryLoadingData() {
         //on vérifie l'accès aux données de localisation
-        boolean success = false;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //si on n'a pas l'autorisation, on la demande
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION);
@@ -91,17 +90,13 @@ public class MainActivity extends AppCompatActivity {
             //Permissions accordées : lancement du chargement
             loadData();
         }
-        if (success) {//si c'est réussit, on change d'activité et on présente les destinations
-
-        }
     }
 
     public void loadData() {
         //on récupère la position
-        Log.d(TAG, "OUAIS JE VAIS RECUPERER MA POSITION");
+        //Log.d(TAG, "OUAIS JE VAIS RECUPERER MA POSITION");
 
         Location location = getLastKnownLocation();
-        Log.d(TAG, "so far so good");
         if (location == null){
             Log.d(TAG, "fais iech j'ai location=null");
         } else {
@@ -118,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Location getLastKnownLocation() {
-        Log.d(TAG, "où suis-je, dans quel étagère?");
         locationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
         List<String> providers = locationManager.getProviders(true);
         Location bestLocation = null;
@@ -180,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                         String value = entry.getValue();
                         URL += "&"+key+"="+value;
                     }
-                    Log.d(TAG, "url avec paramètres="+URL);
+                    //Log.d(TAG, "url avec paramètres="+URL);
                 }
                 URL apiURL = new URL(URL);
                 URLConnection urlConnection = apiURL.openConnection();
@@ -197,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 bufferedReader.close();
                 //On a le résultat, maintenant on le parse et on le met dans une jolie hashmap
-                Log.d(TAG, content.toString());
+                //Log.d(TAG, content.toString());
 
                 try {
 
@@ -244,13 +238,13 @@ public class MainActivity extends AppCompatActivity {
                                     break;*/
 
                                 getInstance().addDestination(destination);
-                        } catch (Exception e) {Log.d(TAG, e.toString());}
+                        } catch (Exception e) {Log.d(TAG, "Error while parsing the following JSON object " + dataArray.getJSONObject(i).toString() + "\n" + e.toString());}
                     }
                 } catch (Exception e){
                     Log.d(TAG, "on a pas réussis à parse le Json");
                     Log.d(TAG, e.toString());
                 }
-                Log.d(TAG, "on retourne succès");
+                //Log.d(TAG, "on retourne succès");
                 return true;
             }
                 catch (Exception e) {Log.d(TAG, e.toString());}
@@ -266,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 //quand c'et chargé on va direct sur la nouvelle activité qui présente les contenus
                 pBar.setVisibility(View.GONE);
                 progressText.setText("Chargement terminé");
-                Log.d(TAG, "lance nouvel intent");
+                Log.d(TAG, "lance nouvel intent pour démarrer l'activité DisplayDestinations");
                 Intent dispDestIntent = new Intent( MainActivity.this, DisplayDestinations.class );
                 startActivity(dispDestIntent);
             } else {
