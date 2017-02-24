@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected ProgressBar pBar;
     protected Button ask_permission_button;
     protected Button retry_button;
+    protected Button goToDestButton;
     private TextView textError;
     private TextView progressText;
 
@@ -74,6 +75,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        goToDestButton = (Button) findViewById(R.id.goToDestButton);
+        goToDestButton.setVisibility(View.GONE);
+        goToDestButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.d(TAG, "click (via intent) pour démarrer l'activité DisplayDestinations");
+                Intent dispDestIntent = new Intent( MainActivity.this, DisplayDestinations.class );
+                startActivity(dispDestIntent);
+            }
+        });
+
         pBar = (ProgressBar) findViewById(R.id.progressBar);
         pBar.setVisibility(View.GONE);
 
@@ -99,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         Location location = getLastKnownLocation();
         if (location == null){
             Log.d(TAG, "fais iech j'ai location=null");
+            progressText.setText("Aucune position trouvée");
+            retry_button.setVisibility(View.VISIBLE);
         } else {
             Log.d(TAG, "cool, location != null");
             //on récupére la position et on la met dans une hashmap
@@ -200,10 +213,9 @@ public class MainActivity extends AppCompatActivity {
 
                     getInstance().setOffset(String.valueOf(retrievedJSON.getInt("offset")));
 
-                    HashMap<String, String> destination = new HashMap<String, String>();
-
                     for (int i = 0; i < dataArray.length(); i++)
                     {
+                        HashMap<String, String> destination = new HashMap<String, String>();
                         try {
                             JSONObject currentObj = dataArray.getJSONObject(i);
                             String type = currentObj.getString("type");
@@ -211,6 +223,10 @@ public class MainActivity extends AppCompatActivity {
                             destination.put("type", type);
                             destination.put("display", currentObj.getString("display"));
                             destination.put("media_url", currentObj.getString("media"));
+
+                            //destination.put("img", String.valueOf(R.drawable.zombie_bunny));
+
+                            Log.d(TAG, currentObj.getString("media"));
 
                             /* Inutile ici
                             switch (type) {
@@ -260,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
                 //quand c'et chargé on va direct sur la nouvelle activité qui présente les contenus
                 pBar.setVisibility(View.GONE);
                 progressText.setText("Chargement terminé");
+                goToDestButton.setVisibility(View.VISIBLE);
                 Log.d(TAG, "lance nouvel intent pour démarrer l'activité DisplayDestinations");
                 Intent dispDestIntent = new Intent( MainActivity.this, DisplayDestinations.class );
                 startActivity(dispDestIntent);
