@@ -4,16 +4,11 @@ import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Base64;
 import android.util.Log;
-import android.widget.ImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.ArrayList;
-
-import static android.R.attr.bitmap;
 
 public final class VoyageSingleton extends Application {
 
@@ -79,10 +74,8 @@ public final class VoyageSingleton extends Application {
 
         protected Boolean doInBackground(String... urls) {
             try {
-                Log.d(TAG, "image url="+URL);
-                Log.d(TAG, "GO STREAM");
+                //Log.d(TAG, "starts downloading image url="+URL);
                 InputStream in = new java.net.URL(URL).openStream();
-                Log.d(TAG, "STREAM ouvert");
                 bmImg = BitmapFactory.decodeStream(in);
                 return true;
             } catch (Exception e) {
@@ -98,10 +91,8 @@ public final class VoyageSingleton extends Application {
         {
             super.onPostExecute(success);
             if (success) {
-                Log.d(TAG, "On met notre image deans imagList");
                 imagesMap.put(URL, bmImg);
             } else {
-                Log.d(TAG, "asynctask DL image a fail :/");
             }
         }
     }

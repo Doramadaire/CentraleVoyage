@@ -16,6 +16,9 @@ import java.util.List;
 import static com.example.gclaverie.centralevoyage.VoyageSingleton.getInstance;
 
 public class DestinationAdapter extends BaseAdapter {
+
+    private static final String TAG = DestinationAdapter.class.getSimpleName();
+
     List<HashMap<String, String>> destination_list;
     // LayoutInflater aura pour mission de charger notre fichier XMLLayoutInflater inflater;
     LayoutInflater inflater;
@@ -44,7 +47,6 @@ public class DestinationAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            Log.v("test", "convertView is null");
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.destination_item , null);
             holder.tvType = (TextView) convertView.findViewById(R.id.title);
@@ -52,12 +54,12 @@ public class DestinationAdapter extends BaseAdapter {
             holder.tvImage = (ImageView) convertView.findViewById(R.id.img);
             convertView.setTag(holder);
         } else {
-            Log.v("test", "convertView is not null");
             holder = (ViewHolder) convertView.getTag();
         }
         HashMap<String, String> destination = destination_list.get(position);
         holder.tvType.setText(destination.get("type"));
-        holder.tvDescription.setText(destination.get("description"));
+        holder.tvDescription.setText(destination.get("display"));
+        Log.d(TAG, "display=" + destination.get("display"));
         //Pour l'image, on la récupère depuis la HashMap de notre singleton
         String img_url = destination.get("img_url");
         Bitmap image =  getInstance().getImagesMap().get(img_url);

@@ -25,6 +25,8 @@ import android.widget.TextView;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import com.squareup.picasso.Picasso;
+
 import static com.example.gclaverie.centralevoyage.VoyageSingleton.getInstance;
 
 public class MainActivity extends AppCompatActivity {

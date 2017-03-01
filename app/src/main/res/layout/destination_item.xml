@@ -10,7 +10,9 @@
         android:adjustViewBounds="true"
         android:cropToPadding="true"
         android:scaleType="fitStart"
-        android:layout_height="150dp" />
+        android:layout_height="120dp" />
+        <!-- avoir un maxWidth pour laisser plus de place au texte
+          mais faut passer la valeur de maxWidth avec une variable? -->
 
     <LinearLayout
         android:orientation="vertical"

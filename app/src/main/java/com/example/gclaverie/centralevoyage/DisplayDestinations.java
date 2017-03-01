@@ -4,7 +4,6 @@ import android.app.ListActivity;
 import android.os.Bundle;
 
 import android.view.View;
-import android.widget.SimpleAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -31,13 +30,6 @@ public class DisplayDestinations extends ListActivity {
         DestinationAdapter adapter = new DestinationAdapter(this, listItem);
         myListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        //Création d'un SimpleAdapter qui se chargera de mettre les items présent dans notre list (listItem) dans la vue affichageitem
-        /*
-        SimpleAdapter mSchedule = new SimpleAdapter (this.getBaseContext(), listItem, R.layout.destination_item,
-                new String[] {"img", "type", "display"}, new int[] {R.id.img, R.id.title, R.id.description});
-
-        //On attribut à notre listActivity l'adapter que l'on vient de créer
-        setListAdapter(mSchedule);*/
     }
 
     @Override
