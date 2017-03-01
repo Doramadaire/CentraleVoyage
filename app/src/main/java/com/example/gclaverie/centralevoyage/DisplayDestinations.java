@@ -22,18 +22,22 @@ public class DisplayDestinations extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_display_destinations);
+        setContentView(R.layout.activity_display_destinations);
 
         //Création de la ArrayList qui nous permettra d'alimenter la listView
         ArrayList<HashMap<String, String>> listItem = getInstance().getDestinationList();
 
+        ListView myListView = (ListView) findViewById(R.id.destinationListView);
+        DestinationAdapter adapter = new DestinationAdapter(this, listItem);
+        myListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         //Création d'un SimpleAdapter qui se chargera de mettre les items présent dans notre list (listItem) dans la vue affichageitem
-        SimpleAdapter mSchedule = new SimpleAdapter (this.getBaseContext(), listItem, R.layout.destination_list,
+        /*
+        SimpleAdapter mSchedule = new SimpleAdapter (this.getBaseContext(), listItem, R.layout.destination_item,
                 new String[] {"img", "type", "display"}, new int[] {R.id.img, R.id.title, R.id.description});
-        //TO DO : changer adapter pour qu'il prenne mon image
 
         //On attribut à notre listActivity l'adapter que l'on vient de créer
-        setListAdapter(mSchedule);
+        setListAdapter(mSchedule);*/
     }
 
     @Override

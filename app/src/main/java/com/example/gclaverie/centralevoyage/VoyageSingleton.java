@@ -4,12 +4,16 @@ import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.ArrayList;
+
+import static android.R.attr.bitmap;
 
 public final class VoyageSingleton extends Application {
 
@@ -18,13 +22,8 @@ public final class VoyageSingleton extends Application {
     private static final String TAG = VoyageSingleton.class.getSimpleName();
 
     private ArrayList<HashMap<String, String>> destinationList = new ArrayList<HashMap<String, String>>();
-    private HashMap<String, Bitmap> images = new HashMap<String, Bitmap>();
+    private HashMap<String, Bitmap> imagesMap = new HashMap<String, Bitmap>();
     private String offset;
-
-    /*
-    private VoyageSingleton(){
-        super();
-    }*/
 
     public static VoyageSingleton getInstance()
     {
@@ -51,6 +50,10 @@ public final class VoyageSingleton extends Application {
         return destinationList;
     }
 
+    public HashMap<String, Bitmap> getImagesMap() {
+        return imagesMap;
+    }
+
     public void setDestinationList(ArrayList<HashMap<String, String>> destinationList) {
         this.destinationList = destinationList;
     }
@@ -60,20 +63,12 @@ public final class VoyageSingleton extends Application {
             String img_url = destination.get("media_url");
             Bitmap bmImage = null;
             new DownloadImageTask(img_url, bmImage).execute();
-            destination.put("img", String.valueOf(bmImage));
-            if (bmImage == null) {
-                Log.d(TAG, "img nulle");
-            } else {
-                Log.d(TAG, "ouais, img pas nulle");
-            }
-            this.images.put(img_url, bmImage);
-            //destination.put("img", images.get(img_url));
-            //pb : adapter, lui expliquer
+            destination.put("img_url", img_url);
         }
         this.destinationList.add(destination);
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    private class DownloadImageTask extends AsyncTask<String, Void, Boolean> {
         Bitmap bmImg;
         String URL;
 
@@ -82,18 +77,32 @@ public final class VoyageSingleton extends Application {
             this.bmImg = bmImage;
         }
 
-        protected Bitmap doInBackground(String... urls) {
-            Bitmap mIcon11 = null;
+        protected Boolean doInBackground(String... urls) {
             try {
                 Log.d(TAG, "image url="+URL);
+                Log.d(TAG, "GO STREAM");
                 InputStream in = new java.net.URL(URL).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
+                Log.d(TAG, "STREAM ouvert");
+                bmImg = BitmapFactory.decodeStream(in);
+                return true;
             } catch (Exception e) {
                 Log.d(TAG, "encore un fail :/");
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
-            return mIcon11;
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success)
+        {
+            super.onPostExecute(success);
+            if (success) {
+                Log.d(TAG, "On met notre image deans imagList");
+                imagesMap.put(URL, bmImg);
+            } else {
+                Log.d(TAG, "asynctask DL image a fail :/");
+            }
         }
     }
 }

@@ -224,8 +224,6 @@ public class MainActivity extends AppCompatActivity {
                             destination.put("display", currentObj.getString("display"));
                             destination.put("media_url", currentObj.getString("media"));
 
-                            //destination.put("img", String.valueOf(R.drawable.zombie_bunny));
-
                             Log.d(TAG, currentObj.getString("media"));
 
                             /* Inutile ici
