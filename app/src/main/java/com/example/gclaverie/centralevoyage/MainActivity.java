@@ -119,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
             //on récupére la position et on la met dans une hashmap
             parameters.put("lat", String.valueOf(location.getLatitude()));
             parameters.put("lon", String.valueOf(location.getLongitude()));
+            Log.d(TAG, String.valueOf(location.getLatitude()));
+            Log.d(TAG, String.valueOf(location.getLongitude()));
             //parameters.put("lat", "43.14554197717751");
             //parameters.put("lon", "6.00246207789145");
             parameters.put("offset", "0");
@@ -222,39 +224,35 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject currentObj = dataArray.getJSONObject(i);
                             String type = currentObj.getString("type");
 
-                            destination.put("type", type);
                             destination.put("display", currentObj.getString("display"));
                             destination.put("media_url", currentObj.getString("media"));
 
-                            Log.d(TAG, currentObj.getString("media"));
-
-                            /* Inutile ici
                             switch (type) {
                                 case "CITY":
                                 case "ADMIN":
-
-                                    Log.d(TAG, "CITY ou ADMIN");
-                                    Log.d(TAG, currentObj.toString());
-
+                                    destination.put("type", "Ville");
                                     break;
 
                                 case "POI":
-                                    Log.d(TAG, "POI");
-                                    Log.d(TAG, currentObj.toString());
+                                    destination.put("type", "POI");
                                     break;
 
                                 case "PARCOURS":
-                                    Log.d(TAG, "PARCOURS");
-                                    Log.d(TAG, currentObj.toString());
+                                    destination.put("type", "Parcours");
+                                    break;
+
+                                case "RESTAURANT":
+                                    //MEURS
+                                    Log.d(TAG, "erf, un resto");
                                     break;
 
                                 default:
-                                    Log.d(TAG, "cas autre");
-                                    Log.d(TAG, currentObj.toString());
-                                    break;*/
-
-                                getInstance().addDestination(destination);
+                                    //on oublie les autres types...
+                                    break;
+                            }
+                            getInstance().addDestination(destination);
                         } catch (Exception e) {Log.d(TAG, "Error while parsing the following JSON object " + dataArray.getJSONObject(i).toString() + "\n" + e.toString());}
+                        destination.clear();
                     }
                 } catch (Exception e){
                     Log.d(TAG, "on a pas réussis à parse le Json");

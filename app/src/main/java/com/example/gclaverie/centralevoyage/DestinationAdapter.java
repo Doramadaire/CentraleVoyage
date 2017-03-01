@@ -59,6 +59,7 @@ public class DestinationAdapter extends BaseAdapter {
         HashMap<String, String> destination = destination_list.get(position);
         holder.tvType.setText(destination.get("type"));
         holder.tvDescription.setText(destination.get("display"));
+        Log.d(TAG, "type=" + destination.get("type"));
         Log.d(TAG, "display=" + destination.get("display"));
         //Pour l'image, on la récupère depuis la HashMap de notre singleton
         String img_url = destination.get("img_url");
