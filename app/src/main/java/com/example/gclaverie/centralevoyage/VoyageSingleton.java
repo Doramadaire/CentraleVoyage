@@ -61,6 +61,12 @@ public final class VoyageSingleton extends Application {
             destination.put("img_url", img_url);
         }
         this.destinationList.add(destination);
+        int count = 0;
+        for (HashMap<String, String> dest: destinationList) {
+            Log.d(TAG, "elem numero=" + String.valueOf(count));
+            Log.d(TAG, dest.toString());
+            count = count + 1;
+        }
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Boolean> {
@@ -92,7 +98,6 @@ public final class VoyageSingleton extends Application {
             super.onPostExecute(success);
             if (success) {
                 imagesMap.put(URL, bmImg);
-            } else {
             }
         }
     }

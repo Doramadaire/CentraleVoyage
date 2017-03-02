@@ -27,6 +27,7 @@ public class DisplayDestinations extends ListActivity {
 
         //Création de la ArrayList qui nous permettra d'alimenter la listView
         ArrayList<HashMap<String, String>> listItem = getInstance().getDestinationList();
+        Log.d(TAG, "j'ai recupere ma destination list, elle a pour taille=" + String.valueOf(listItem.size()));
 
         ListView myListView = (ListView) findViewById(R.id.destinationListView);
         DestinationAdapter adapter = new DestinationAdapter(this, listItem);
@@ -64,6 +65,7 @@ public class DisplayDestinations extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         //Récupèrer la Map qui contient les informations de l'item (titre, decription et image)
         HashMap<String, String> map = (HashMap<String, String>) getListAdapter().getItem(position);
+        Log.v(TAG, "CLICK");
         Log.v(TAG, map.get("display"));
         //Toast.makeText(this, map.get("display")+ " selected", Toast.LENGTH_LONG).show();
     }

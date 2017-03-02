@@ -225,7 +225,9 @@ public class MainActivity extends AppCompatActivity {
                             String type = currentObj.getString("type");
 
                             destination.put("display", currentObj.getString("display"));
-                            destination.put("media_url", currentObj.getString("media"));
+                            if (destination.containsKey("media_url")) {
+                                destination.put("media_url", currentObj.getString("media"));
+                            }
 
                             switch (type) {
                                 case "CITY":
@@ -243,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 case "RESTAURANT":
                                     //MEURS
-                                    Log.d(TAG, "erf, un resto");
+                                    //Log.d(TAG, "erf, un resto");
                                     break;
 
                                 default:

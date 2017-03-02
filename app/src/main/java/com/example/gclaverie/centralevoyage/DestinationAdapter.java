@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 
 import static com.example.gclaverie.centralevoyage.VoyageSingleton.getInstance;
 
@@ -19,7 +19,7 @@ public class DestinationAdapter extends BaseAdapter {
 
     private static final String TAG = DestinationAdapter.class.getSimpleName();
 
-    List<HashMap<String, String>> destination_list;
+    ArrayList<HashMap<String, String>> destination_list;
     // LayoutInflater aura pour mission de charger notre fichier XMLLayoutInflater inflater;
     LayoutInflater inflater;
 
@@ -35,9 +35,11 @@ public class DestinationAdapter extends BaseAdapter {
         ImageView tvImage;
     }
 
-    public DestinationAdapter(Context context, List<HashMap<String, String>> objects) {
+    public DestinationAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
         inflater = LayoutInflater.from(context);
         this.destination_list = objects;
+        Log.d(TAG, "DEST-ADAPT moi aussi j'ai recupere ma destination list, elle a pour taille=" + String.valueOf(destination_list.size()));
+        Log.d(TAG, "ma list a pour clefs=" + String.valueOf(destination_list.size()));
     }
 
     /**
@@ -45,6 +47,7 @@ public class DestinationAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d(TAG, "getView de la position=" + String.valueOf(position));
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -57,6 +60,19 @@ public class DestinationAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         HashMap<String, String> destination = destination_list.get(position);
+        /*
+        Log.d(TAG, "getView recupere une destination : " + destination.toString());
+        Log.d(TAG, "getView dans dest list il y a desormais cb elems? "+ String.valueOf(destination_list.size()));
+        destination_list.trimToSize();
+        Log.d(TAG, "getView apres trim - desormais cb elems? "+ String.valueOf(destination_list.size()));
+        Log.d(TAG, destination_list.toArray()[0].toString());
+        Log.d(TAG, String.valueOf(destination_list.indexOf(destination_list.toArray()[0])));
+        int count = 0;
+        for (HashMap<String, String> dest: destination_list) {
+            Log.d(TAG, "elem numero=" + String.valueOf(count));
+            Log.d(TAG, dest.toString());
+            count = count + 1;
+        }*/
         holder.tvType.setText(destination.get("type"));
         holder.tvDescription.setText(destination.get("display"));
         Log.d(TAG, "type=" + destination.get("type"));
