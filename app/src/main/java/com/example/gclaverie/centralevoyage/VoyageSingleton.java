@@ -92,7 +92,19 @@ public final class VoyageSingleton extends Application {
             super.onPostExecute(success);
             if (success) {
                 imagesMap.put(URL, bmImg);
-            } else {
+                /*
+                if (DisplayDestinations.isCreated()) {
+                    try {
+                        Log.d(TAG, "DL réussi url=" + URL);
+                        DisplayDestinations.updateImage();
+                    } catch (NullPointerException nullException) {
+                        //La methode DisplayDestinations est pas encore crée
+                    } catch (Exception e) {
+                        Log.d(TAG, "encore un fail :/");
+                        Log.e("Error", e.getMessage());
+                        e.printStackTrace();
+                    }
+                }*/
             }
         }
     }

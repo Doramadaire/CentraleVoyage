@@ -22,6 +22,7 @@ public class DestinationAdapter extends BaseAdapter {
     List<HashMap<String, String>> destination_list;
     // LayoutInflater aura pour mission de charger notre fichier XMLLayoutInflater inflater;
     LayoutInflater inflater;
+    ViewHolder holder;
 
     /**
      * Elle nous servira à mémoriser les éléments de la liste en mémoire pour
@@ -33,6 +34,10 @@ public class DestinationAdapter extends BaseAdapter {
         TextView tvType;
         TextView tvDescription;
         ImageView tvImage;
+
+        public void invalidateTvImage() {
+            tvImage.invalidate();
+        }
     }
 
     public DestinationAdapter(Context context, List<HashMap<String, String>> objects) {
@@ -45,7 +50,6 @@ public class DestinationAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.destination_item , null);
@@ -65,6 +69,10 @@ public class DestinationAdapter extends BaseAdapter {
         Bitmap image =  getInstance().getImagesMap().get(img_url);
         holder.tvImage.setImageBitmap(image);
         return convertView;
+    }
+
+    public void invalidateImage() {
+        holder.invalidateTvImage();
     }
 
     @Override

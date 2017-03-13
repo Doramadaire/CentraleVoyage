@@ -17,6 +17,8 @@ import static com.example.gclaverie.centralevoyage.VoyageSingleton.getInstance;
 public class DisplayDestinations extends ListActivity {
 
     private static final String TAG = DisplayDestinations.class.getSimpleName();
+    private static DestinationAdapter adapter = null;
+    private static boolean isCreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class DisplayDestinations extends ListActivity {
         DestinationAdapter adapter = new DestinationAdapter(this, listItem);
         myListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        isCreated = true;
     }
 
     @Override
@@ -37,5 +40,19 @@ public class DisplayDestinations extends ListActivity {
         //Récupèrer la Map qui contient les informations de l'item (titre, decription et image)
         HashMap<String, String> map = (HashMap<String, String>) getListAdapter().getItem(position);
         Toast.makeText(this, map.get("display")+ " selected", Toast.LENGTH_LONG).show();
+    }
+
+    public static boolean isCreated() {
+        return isCreated;
+    }
+
+    public static void updateImage() {
+        try {
+            adapter.invalidateImage();
+        } catch (Exception e) {
+            Log.d(TAG, "encore un fail :/");
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

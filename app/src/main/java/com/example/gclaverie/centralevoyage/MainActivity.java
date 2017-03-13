@@ -222,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject currentObj = dataArray.getJSONObject(i);
                             String type = currentObj.getString("type");
 
-                            //destination.put("type", type);
                             destination.put("display", currentObj.getString("display"));
                             destination.put("media_url", currentObj.getString("media"));
 
@@ -246,10 +245,9 @@ public class MainActivity extends AppCompatActivity {
                                     break;
 
                                 default:
-                                    //on oublie les autres types...
+                                    //on garde pas les autres types...
                                     break;
                             }
-                            //getInstance().addDestination(destination);
                         } catch (Exception e) {Log.d(TAG, "Error while parsing the following JSON object " + dataArray.getJSONObject(i).toString() + "\n" + e.toString());}
                     }
                 } catch (Exception e){
