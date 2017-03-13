@@ -222,38 +222,34 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject currentObj = dataArray.getJSONObject(i);
                             String type = currentObj.getString("type");
 
-                            destination.put("type", type);
+                            //destination.put("type", type);
                             destination.put("display", currentObj.getString("display"));
                             destination.put("media_url", currentObj.getString("media"));
 
                             Log.d(TAG, currentObj.getString("media"));
 
-                            /* Inutile ici
                             switch (type) {
                                 case "CITY":
                                 case "ADMIN":
-
-                                    Log.d(TAG, "CITY ou ADMIN");
-                                    Log.d(TAG, currentObj.toString());
-
+                                    destination.put("type", "Ville");
+                                    getInstance().addDestination(destination);
                                     break;
 
                                 case "POI":
-                                    Log.d(TAG, "POI");
-                                    Log.d(TAG, currentObj.toString());
+                                    destination.put("type", "POI");
+                                    getInstance().addDestination(destination);
                                     break;
 
                                 case "PARCOURS":
-                                    Log.d(TAG, "PARCOURS");
-                                    Log.d(TAG, currentObj.toString());
+                                    destination.put("type", "Parcours");
+                                    getInstance().addDestination(destination);
                                     break;
 
                                 default:
-                                    Log.d(TAG, "cas autre");
-                                    Log.d(TAG, currentObj.toString());
-                                    break;*/
-
-                                getInstance().addDestination(destination);
+                                    //on oublie les autres types...
+                                    break;
+                            }
+                            //getInstance().addDestination(destination);
                         } catch (Exception e) {Log.d(TAG, "Error while parsing the following JSON object " + dataArray.getJSONObject(i).toString() + "\n" + e.toString());}
                     }
                 } catch (Exception e){
